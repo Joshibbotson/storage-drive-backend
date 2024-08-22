@@ -1,0 +1,26 @@
+{
+    "name": "storage-drive-backend",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start:dev": "npx nodemon"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Joshibbotson/storage-drive-backend.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Joshibbotson/storage-drive-backend/issues"
+    },
+    "homepage": "https://github.com/Joshibbotson/storage-drive-backend#readme",
+    "devDependencies": {
+        "@types/node": "^22.5.0",
+        "nodemon": "^3.1.4",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.5.4"
+    }
+}
