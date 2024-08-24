@@ -18,9 +18,15 @@
     },
     "homepage": "https://github.com/Joshibbotson/storage-drive-backend#readme",
     "devDependencies": {
+        "@types/express": "^4.17.21",
         "@types/node": "^22.5.0",
         "nodemon": "^3.1.4",
         "ts-node": "^10.9.2",
         "typescript": "^5.5.4"
+    },
+    "dependencies": {
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "multer": "^1.4.5-lts.1"
     }
 }
