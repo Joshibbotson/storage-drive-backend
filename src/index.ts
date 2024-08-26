@@ -1,30 +1,21 @@
-import express from "express";
-import multer from "multer";
 import dotenv from "dotenv";
-dotenv.config();
+import express from "express";
+import AWS from "aws-sdk";
+const s3 = new AWS.S3();
 
-/** Multer adds a body object and a file or files object to
- * the Fastify's request object. The body object contains the
- *  values of the text fields of the form, the file or files
- * object contains the files uploaded via the form. */
-const upload = multer({ dest: "uploads/" });
+async () => {
+    s3.putObject({
+        Body: "Hello World",
+        Bucket: "ji-file-uploads",
+        Key: "my-file.txt",
+    }).promise();
+};
+
+dotenv.config();
 const app = express();
 
-app.get("/", (req, res) => {
-    res.send("Hello World");
+let port = process.env.PORT;
+
+app.listen(port, () => {
+    console.log(`Listening on port ${port}`);
 });
-
-app.post("/photos/upload", upload.array("photos", 12));
-async function startServer(): Promise<void> {
-    try {
-        const port = process.env.PORT || 3000;
-        app.listen(port);
-        console.log(`Listening on ${port}`);
-        throw new Error("argh!!!!!!");
-    } catch (err) {
-        throw err;
-        console.log(`Server failed with an error of ${err}`);
-    }
-}
-
-startServer();
