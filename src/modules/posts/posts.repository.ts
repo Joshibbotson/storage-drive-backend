@@ -8,15 +8,22 @@
  *  underlying data storage mechanism.
  */
 
+import mongoose from "mongoose";
 import { CreatePostRequestDto } from "./dtos/postsRequest.dto";
-import { PostResponseDto } from "./dtos/postsResponse.dto";
+import { postSchema } from "./posts.schema";
+import { Post } from "./dtos/postsResponse.dto";
 
 export type PostsRepository = {
-    save(posts: CreatePostRequestDto): Promise<PostResponseDto>;
+    save(posts: CreatePostRequestDto): Promise<Post>;
 };
 
 export class MongoPostsRepository implements PostsRepository {
-    connect() {}
+    postsModel = mongoose.model("posts", postSchema);
+    constructor() {}
+    async save(newPost: CreatePostRequestDto): Promise<Post> {
+        const post = new this.postsModel(newPost);
+        await post.save();
 
-    async save(posts: CreatePostRequestDto): Promise<PostResponseDto> {}
+        return post.toObject();
+    }
 }

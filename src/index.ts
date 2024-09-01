@@ -9,8 +9,12 @@ import multer from "multer";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { postsEntity } from "./modules/index.entity";
 import mongoose from "mongoose";
+import { DatasourceManager } from "./datasource/datasourceManager";
 
 dotenv.config();
+const dataSource = DatasourceManager.instance;
+dataSource.datasource.connect();
+
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
 const accessKey = process.env.ACCESS_KEY;
@@ -36,10 +40,10 @@ app.listen(port, () => {
 
 app.get("/api/posts", async (req, res) => {
     // TODO
-    const client = new S3Client(clientParams);
-    const command = new GetObjectCommand(getObjectParams);
-    const url = await getSignedUrl(client, command, { expiresIn: 3600 });
-    res.send(posts);
+    // const client = new S3Client(clientParams);
+    // const command = new GetObjectCommand(getObjectParams);
+    // const url = await getSignedUrl(client, command, { expiresIn: 3600 });
+    // res.send(posts);
 });
 
 app.post("/api/newPost", upload.single("image"), async (req: any, res) => {
@@ -63,23 +67,3 @@ app.post("/api/newPost", upload.single("image"), async (req: any, res) => {
 
     res.send(post);
 });
-
-async function connect(): Promise<void> {
-    try {
-        await mongoose.connect(this.connectionString);
-        this.logger.info("MongoDB connection successful");
-    } catch (err) {
-        this.logger.error("MongoDB connection error:", err);
-        throw err;
-    }
-}
-
-async function close(): Promise<void> {
-    try {
-        await mongoose.disconnect();
-        this.logger.info("Mongoose connection closed.");
-    } catch (err) {
-        this.logger.error("Error closing the mongoose connection", err);
-        throw err;
-    }
-}

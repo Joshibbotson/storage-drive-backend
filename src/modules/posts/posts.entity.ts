@@ -6,13 +6,13 @@
  */
 
 import { CreatePostRequestDto } from "./dtos/postsRequest.dto";
-import { PostResponseDto } from "./dtos/postsResponse.dto";
+import { Post } from "./dtos/postsResponse.dto";
 import { PostsRepository } from "./posts.repository";
 
 export class PostsEntity {
     constructor(private readonly postsRepository: PostsRepository) {}
 
-    async create(post: CreatePostRequestDto): PostResponseDto {
+    async create(post: CreatePostRequestDto): Promise<Post> {
         return this.postsRepository.save(post);
     }
 }
