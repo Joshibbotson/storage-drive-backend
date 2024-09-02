@@ -4,6 +4,7 @@ import {
     S3Client,
     PutObjectCommand,
     GetObjectCommand,
+    DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import multer from "multer";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -39,11 +40,22 @@ app.listen(port, () => {
 });
 
 app.get("/api/posts", async (req, res) => {
-    // TODO
-    // const client = new S3Client(clientParams);
-    // const command = new GetObjectCommand(getObjectParams);
-    // const url = await getSignedUrl(client, command, { expiresIn: 3600 });
-    // res.send(posts);
+    // get all images
+    const posts = await postsEntity.findMany();
+
+    // loop through and create a config for each
+    // add imageUrl for each and send posts back to client
+    for (const post of posts) {
+        const getObjectParams = {
+            Bucket: bucketName,
+            Key: post.imageName,
+        };
+        const command = new GetObjectCommand(getObjectParams);
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600 }); // 1 hour
+        post.imageUrl = url;
+    }
+
+    res.send(posts);
 });
 
 app.post("/api/newPost", upload.single("image"), async (req: any, res) => {
@@ -60,10 +72,29 @@ app.post("/api/newPost", upload.single("image"), async (req: any, res) => {
     const command = new PutObjectCommand(params);
 
     await s3.send(command);
-    // TODO implement posts
     const post = await postsEntity.create({
         imageName: req.file.originalname,
     });
 
     res.send(post);
+});
+
+app.delete("/api/posts/:id", async (req, res) => {
+    console.log("hit");
+    const id = req.params.id;
+
+    const post = await postsEntity.findById(id);
+    if (!post) {
+        res.status(404).send("Post not found");
+        return;
+    }
+
+    const params = {
+        Bucket: bucketName,
+        Key: post.imageName,
+    };
+    const command = new DeleteObjectCommand(params);
+    await s3.send(command);
+    await postsEntity.deleteById(id);
+    res.send({});
 });

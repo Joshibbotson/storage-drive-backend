@@ -15,6 +15,9 @@ import { Post } from "./dtos/postsResponse.dto";
 
 export type PostsRepository = {
     save(posts: CreatePostRequestDto): Promise<Post>;
+    read(): Promise<Post[]>;
+    readById(id: string): Promise<Post>;
+    delete(id: string): Promise<void>;
 };
 
 export class MongoPostsRepository implements PostsRepository {
@@ -25,5 +28,17 @@ export class MongoPostsRepository implements PostsRepository {
         await post.save();
 
         return post.toObject();
+    }
+
+    async read(): Promise<Post[]> {
+        return this.postsModel.find();
+    }
+
+    async readById(id: string): Promise<Post> {
+        return this.postsModel.findById(id);
+    }
+
+    async delete(id: string): Promise<void> {
+        this.postsModel.deleteOne({ $where: id });
     }
 }
