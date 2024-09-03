@@ -13,7 +13,9 @@ export type PostsEntityType = {
     create(post: CreatePostRequestDto): Promise<Post>;
     findMany(): Promise<Post[]>;
     findById(id: string): Promise<Post>;
-    deleteById(id: string): Promise<void>;
+    deleteById(
+        id: string
+    ): Promise<{ acknowledged: boolean; deletedCount: number }>;
 };
 
 export class PostsEntity implements PostsEntityType {
@@ -31,7 +33,9 @@ export class PostsEntity implements PostsEntityType {
         return this.postsRepository.readById(id);
     }
 
-    async deleteById(id: string): Promise<void> {
+    async deleteById(
+        id: string
+    ): Promise<{ acknowledged: boolean; deletedCount: number }> {
         return this.postsRepository.delete(id);
     }
 }

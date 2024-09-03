@@ -17,7 +17,9 @@ export type PostsRepository = {
     save(posts: CreatePostRequestDto): Promise<Post>;
     read(): Promise<Post[]>;
     readById(id: string): Promise<Post>;
-    delete(id: string): Promise<void>;
+    delete(
+        id: string
+    ): Promise<{ acknowledged: boolean; deletedCount: number }>;
 };
 
 export class MongoPostsRepository implements PostsRepository {
@@ -38,7 +40,9 @@ export class MongoPostsRepository implements PostsRepository {
         return this.postsModel.findById(id);
     }
 
-    async delete(id: string): Promise<void> {
-        this.postsModel.deleteOne({ $where: id });
+    async delete(
+        id: string
+    ): Promise<{ acknowledged: boolean; deletedCount: number }> {
+        return this.postsModel.deleteOne({ _id: id });
     }
 }

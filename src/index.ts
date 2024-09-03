@@ -9,7 +9,7 @@ import {
 import multer from "multer";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { postsEntity } from "./modules/index.entity";
-import mongoose from "mongoose";
+
 import { DatasourceManager } from "./datasource/datasourceManager";
 
 dotenv.config();
